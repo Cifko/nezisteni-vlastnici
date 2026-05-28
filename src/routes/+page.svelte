@@ -190,7 +190,13 @@
 
         <div class="px-6 py-3 bg-gray-50 border-t border-gray-200 flex items-center justify-between flex-wrap gap-2">
           <p class="text-sm text-gray-600">
-            Zobrazených {results.length} výsledkov
+            {#if results.length == 1}
+              Zobrazený 1 výsledok
+            {:else if results.length >= 2 && results.length <= 4}
+              Zobrazené {results.length} výsledky
+            {:else}
+              Zobrazených {results.length} výsledkov
+            {/if}
           </p>
           {#if is_fully_loaded}
             <p class="text-sm text-gray-500">Načítané všetky výsledky</p>
