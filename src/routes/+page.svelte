@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
   let query = $state("");
   let loading = $state(false);
   let error = $state("");
@@ -12,6 +13,25 @@
   const LV_COL_INDEX = 2;
   const MIN_QUERY_LENGTH = 3;
   let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+
+  onMount(() => {
+		const params = new URLSearchParams(window.location.search);
+		query = params.get('q') || '';
+    search();
+	});
+
+  $effect(() => {
+		const currentQuery = query; 
+		const url = new URL(window.location.href);
+		
+		if (currentQuery.trim()) {
+			url.searchParams.set('q', currentQuery);
+		} else {
+			url.searchParams.delete('q');
+		}
+
+		window.history.replaceState({}, '', url.toString());
+	});
 
   async function load(last_id?: number) {
     let local_result = [];
