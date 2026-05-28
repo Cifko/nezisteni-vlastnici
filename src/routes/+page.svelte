@@ -75,11 +75,6 @@
     results = [...results, ...newResults];
   }
 
-  function renderCell(row: any, col: string, i: number) {
-    if (row[col] !== undefined) return row[col];
-    if (typeof row === "object" && row !== null) return Object.values(row)[i] ?? "-";
-    return String(row);
-  }
 
   function startSearch() {
     if (searchTimeout) clearTimeout(searchTimeout);
@@ -182,7 +177,7 @@
                 {#each results as row}
                   <tr class="hover:bg-blue-50 transition-colors">
                     {#each columns as col, i}
-                      <td class="px-6 py-4 text-gray-900 truncate">
+                      <td class="px-6 py-4 text-gray-900 truncate" title="{row[columnKeys[i]]}">
                         {#if i == LV_COL_INDEX}
                           <a
                             href="https://kataster.skgeodesy.sk/Portal45/api/Bo/GeneratePrfPublic?prfNumber={row[columnKeys[LV_COL_INDEX]]}&cadastralUnitCode={row[columnKeys[PORADOVE_CISLO_COL_INDEX]]}&outputType=html"
