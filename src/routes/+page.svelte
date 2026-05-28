@@ -6,6 +6,7 @@
   let results: Record<string, any>[] = $state([]);
   let is_fully_loaded = $state(false);
   const columns: string[] = ["Katastrálne územie", "Poradové číslo", "LV", "Meno neznámeho vlastníka"];
+  const columnKeys: string[] = ["kataster", "poradove_cislo", "lv", "vlastnik"];
   const widths: number[] = [200, 120, 80, 480];
   const PORADOVE_CISLO_COL_INDEX = 1;
   const LV_COL_INDEX = 2;
@@ -164,15 +165,13 @@
                       <td class="px-6 py-4 text-gray-900 truncate">
                         {#if i == LV_COL_INDEX}
                           <a
-                            href="https://kataster.skgeodesy.sk/Portal45/api/Bo/GeneratePrfPublic?prfNumber={row[
-                              LV_COL_INDEX
-                            ]}&cadastralUnitCode={row[PORADOVE_CISLO_COL_INDEX]}&outputType=html"
+                            href="https://kataster.skgeodesy.sk/Portal45/api/Bo/GeneratePrfPublic?prfNumber={row[columnKeys[LV_COL_INDEX]]}&cadastralUnitCode={row[columnKeys[PORADOVE_CISLO_COL_INDEX]]}&outputType=html"
                             class="flex w-full items-center justify-center rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-center text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 active:bg-slate-200"
                           >
-                            {renderCell(row, col, i)}
+                            {row[columnKeys[i]]}
                           </a>
                         {:else}
-                          {renderCell(row, col, i)}
+                          {row[columnKeys[i]]}
                         {/if}
                       </td>
                     {/each}
