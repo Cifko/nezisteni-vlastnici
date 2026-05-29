@@ -1,18 +1,35 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import { initializeApp } from "firebase/app";
+  import { getAnalytics, logEvent } from "firebase/analytics";
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyBXTB_3TGEFsmeA6Ki7wZ6pgqnL90oWomc",
+    authDomain: "nezisteni-vlastnici.firebaseapp.com",
+    projectId: "nezisteni-vlastnici",
+    storageBucket: "nezisteni-vlastnici.firebasestorage.app",
+    messagingSenderId: "238907387548",
+    appId: "1:238907387548:web:213094f7058feb7615c759",
+    measurementId: "G-ZP82W4BHWH"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const analytics = getAnalytics(app);
+
   let query = $state("");
   let loading = $state(false);
   let error = $state("");
   let last_p_id: number = $state(0);
   let results: Record<string, any>[] = $state([]);
   let is_fully_loaded = $state(false);
+  let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
   const columns: string[] = ["Katastrálne územie", "Poradové číslo", "LV", "Meno neznámeho vlastníka"];
   const columnKeys: string[] = ["kataster", "poradove_cislo", "lv", "vlastnik"];
   const widths: number[] = [200, 120, 80, 480];
   const PORADOVE_CISLO_COL_INDEX = 1;
   const LV_COL_INDEX = 2;
   const MIN_QUERY_LENGTH = 3;
-  let searchTimeout: ReturnType<typeof setTimeout> | null = null;
+  let searchTimeout: number;
 
   onMount(() => {
 		const params = new URLSearchParams(window.location.search);
@@ -66,6 +83,14 @@
       results = [];
       return;
     }
+
+    if (analytics) { 
+      clearTimeout(debounceTimeout!);
+      if (query.length >= 3) {
+        debounceTimeout = setTimeout(() => {logEvent(analytics, 'search', { query: trimmed });}, 1000);
+      }
+    }
+    
     results = await load();
   }
 
