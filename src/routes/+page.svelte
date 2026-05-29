@@ -23,9 +23,9 @@
   let results: Record<string, any>[] = $state([]);
   let is_fully_loaded = $state(false);
   let debounceTimeout: ReturnType<typeof setTimeout> | null = null;
-  const columns: string[] = ["Katastrálne územie", "Poradové číslo", "LV", "Meno neznámeho vlastníka"];
+  const columns: string[] = ["Katastrálne územie", "Poradové číslo", "LV", "Meno neznámeho vlastníka", "", ""];
   const columnKeys: string[] = ["kataster", "poradove_cislo", "lv", "vlastnik"];
-  const widths: number[] = [200, 120, 80, 480];
+  const widths: number[] = [200, 120, 80, 420, 30, 10];
   const PORADOVE_CISLO_COL_INDEX = 1;
   const LV_COL_INDEX = 2;
   const MIN_QUERY_LENGTH = 3;
@@ -201,20 +201,21 @@
               <tbody class="divide-y divide-gray-200">
                 {#each results as row}
                   <tr class="hover:bg-blue-50 transition-colors">
-                    {#each columns as col, i}
-                      <td class="px-6 py-4 text-gray-900 truncate" title="{row[columnKeys[i]]}">
-                        {#if i == LV_COL_INDEX}
-                          <a
-                            href="https://kataster.skgeodesy.sk/Portal45/api/Bo/GeneratePrfPublic?prfNumber={row[columnKeys[LV_COL_INDEX]]}&cadastralUnitCode={row[columnKeys[PORADOVE_CISLO_COL_INDEX]]}&outputType=html"
-                            class="flex w-full items-center justify-center rounded-md border border-slate-300 bg-slate-50 px-3 py-2 text-center text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 active:bg-slate-200"
-                          >
-                            {row[columnKeys[i]]}
-                          </a>
-                        {:else}
-                          {row[columnKeys[i]]}
-                        {/if}
+                    {#each Object.entries(row) as [key, cell]}
+                      <td class="px-6 py-4 text-gray-900 truncate" title="{cell}">
+                        {cell}
                       </td>
                     {/each}
+                    <td class="px-1">
+                      <a href="https://kataster.skgeodesy.sk/Portal45/api/Bo/GeneratePrfPublic?prfNumber={row[columnKeys[LV_COL_INDEX]]}&cadastralUnitCode={row[columnKeys[PORADOVE_CISLO_COL_INDEX]]}&outputType=pdf" class="flex w-full items-center justify-center rounded-md border border-slate-300 bg-slate-50 px-2 py-2 text-center text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 active:bg-slate-200" target="_blank">
+                        <img src="pdf.svg"/>
+                      </a>
+                    </td>
+                    <td class="px-1">
+                      <a href="https://zbgis.skgeodesy.sk/mapka/sk/kataster/detail/kataster/list-vlastnictva/{row[columnKeys[PORADOVE_CISLO_COL_INDEX]]}/{row[columnKeys[LV_COL_INDEX]]}" class="flex w-full items-center justify-center rounded-md border border-slate-300 bg-slate-50 px-2 py-2 text-center text-sm font-medium text-slate-800 shadow-sm transition hover:border-slate-400 hover:bg-slate-100 hover:text-slate-900 focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:ring-offset-1 active:bg-slate-200" target="_blank">
+                        <img src="map.svg">
+                      </a>
+                    </td>
                   </tr>
                 {/each}
               </tbody>
